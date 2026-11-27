@@ -4,7 +4,7 @@
 </picture>
 
 <p align="center">
-  <a href="https://soz1p.github.io/jeon-sojin-portfolio/#p-vdr"><b>Portfolio (KO)</b></a> &nbsp;·&nbsp; <a href="https://soz1p.github.io/jeon-sojin-portfolio/?lang=en#p-vdr"><b>Portfolio (EN)</b></a> &nbsp;·&nbsp; <a href="papers/jeon-sojin-masters-thesis-2026.pdf"><b>Thesis PDF</b></a> &nbsp;·&nbsp; <a href="https://dspace.hansung.ac.kr/handle/2024.oak/10820"><b>HSU Repository</b></a>
+  <a href="https://soz1p.github.io/jeon-sojin-portfolio/#p-vdr"><b>Portfolio (KO)</b></a> &nbsp;·&nbsp; <a href="https://soz1p.github.io/jeon-sojin-portfolio/?lang=en#p-vdr"><b>Portfolio (EN)</b></a> &nbsp;·&nbsp; <a href="papers/jeon-sojin-masters-thesis-2026.pdf"><b>Thesis PDF</b></a> &nbsp;·&nbsp; <a href="https://dspace.hansung.ac.kr/handle/2024.oak/10820"><b>HSU Repository</b></a> &nbsp;·&nbsp; <a href="https://github.com/soz1p/CUDA-PBD-Sandbox"><b>Public demo code</b></a>
 </p>
 
 <p align="center">
@@ -116,11 +116,26 @@ connect(_glWidget,     &GLWidget::volumeBoundsChanged,
 
 <sub>실험 환경 · NVIDIA GeForce RTX 3090, AMD Ryzen 9 3900X, Windows 10, C++ / CUDA 12.6 · Abdomen 512×512×300, Head 512×512×544, Lower body 512×512×1152 CT를 4배 다운샘플링 · 블록 크기 8³</sub>
 
+## Public demo · CUDA-PBD-Sandbox
+
+연구실 코드와 CT 데이터는 공개할 수 없어, 활성 블록 제한 보정의 아이디어를 합성 격자 천 위에서 처음부터 다시 구현한 데모를 따로 공개했습니다. 기본 구조만 보여 주도록 제약은 거리 제약 하나만 사용합니다.
+
+<p align="center"><img src="images/demo-compare.gif" alt="CUDA-PBD-Sandbox compare mode: global (left) and active (right)" width="820"></p>
+<p align="center"><sub>비교 모드 · 왼쪽은 전체 보정, 오른쪽은 활성 블록 보정. 같은 정점에 같은 입력이 들어가고, 주황 칸은 이번 프레임에 보정한 블록입니다.</sub></p>
+
+- **같은 구조:** 8×8 정점 블록, 블록별 CSR 제약 표, 깨어 있는 블록 + 8-이웃만 보정, 잠든 블록 경계는 고정점으로 처리.
+- **잠드는 규칙:** 속도와 제약 오차가 30프레임 연속으로 안정된 블록만 잠듭니다. 속도만 보고 재웠을 때 21 mm 가까이 나던 전체 보정과의 차이가 2.1 mm로 줄었습니다.
+- **전환 기준:** 활성 비율이 70%를 넘으면 전체 보정 경로로 계산합니다. 위 Large 조건처럼 변형이 넓을 때 이득이 줄어드는 문제를, 손해를 보지 않는 방향으로 다룹니다.
+- **실시간 뷰어:** Win32 + OpenGL 3.3, 외부 라이브러리 없음. `C` 키로 두 솔버를 나란히 비교합니다.
+
+👉 **[soz1p/CUDA-PBD-Sandbox](https://github.com/soz1p/CUDA-PBD-Sandbox)** — 빌드 방법, 벤치마크, 옵션은 데모 저장소의 README에 있습니다.
+
 ## Limitations & next steps
 
 - 변형이 넓게 퍼지면 활성 블록이 늘어 전체 보정에 가까운 비용이 듭니다. Large 조건에서는 2.54배로 줄고 반복 상한 안에 종료하지 못했습니다.
 - 측정 시간은 방법 간 비교를 위한 보수적인 종료 조건의 결과입니다. 고정된 소수 반복으로 운용하는 조건은 따로 재야 합니다.
 - 변형 결과 평가가 정성 비교 중심이라, 형상 오차 같은 정량 지표가 필요합니다.
+- 큰 변형에서 이득이 줄어드는 문제는 [공개 데모](https://github.com/soz1p/CUDA-PBD-Sandbox)에서 활성 비율 70% 초과 시 전체 보정으로 넘어가는 전환 기준으로 다뤘습니다.
 
 ## Master's thesis
 
@@ -132,7 +147,7 @@ HP-ChainMail·PBD를 이용한 활성 블록 기반 제한 보정 및 STC 기반
 
 ## Source availability & license
 
-연구실 코드, 후속 연구 코드, 원본 CT 데이터는 공개하지 않습니다. 학위논문은 공식 원문에 명시된 [CC BY-NC-ND 2.0 KR](https://creativecommons.org/licenses/by-nc-nd/2.0/kr/)에 따라 변경 없이 제공하며, 그림의 출처는 학위논문입니다.
+연구실 코드, 후속 연구 코드, 원본 CT 데이터는 공개하지 않습니다. 활성 블록 기법은 연구 코드를 옮기지 않고 새로 작성한 [CUDA-PBD-Sandbox](https://github.com/soz1p/CUDA-PBD-Sandbox)(MIT)로 확인할 수 있습니다. 학위논문은 공식 원문에 명시된 [CC BY-NC-ND 2.0 KR](https://creativecommons.org/licenses/by-nc-nd/2.0/kr/)에 따라 변경 없이 제공하며, 그림의 출처는 학위논문입니다.
 
 ---
 
