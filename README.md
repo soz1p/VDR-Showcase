@@ -118,7 +118,7 @@ connect(_glWidget,     &GLWidget::volumeBoundsChanged,
 
 ## Public demo · CUDA-PBD-Sandbox
 
-연구실 코드와 CT 데이터는 공개할 수 없어, 활성 블록 제한 보정의 아이디어를 합성 격자 천 위에서 처음부터 다시 구현한 데모를 따로 공개했습니다. 기본 구조만 보여 주도록 제약은 거리 제약 하나만 사용합니다.
+연구실 코드와 CT 데이터는 공개할 수 없어, 활성 블록 제한 보정의 아이디어를 합성 격자 천 위에서 처음부터 다시 구현한 데모를 따로 공개했습니다. 기본 구조만 보여 주도록 모든 제약을 거리 제약으로 계산합니다(굽힘은 한 칸 건너뛴 정점 사이의 거리로 근사).
 
 <p align="center"><img src="images/demo-compare.gif" alt="CUDA-PBD-Sandbox compare mode: global (left) and active (right)" width="820"></p>
 <p align="center"><sub>비교 모드 · 왼쪽은 전체 보정, 오른쪽은 활성 블록 보정. 같은 정점에 같은 입력이 들어가고, 주황 칸은 이번 프레임에 보정한 블록입니다.</sub></p>
@@ -126,6 +126,7 @@ connect(_glWidget,     &GLWidget::volumeBoundsChanged,
 - **같은 구조:** 8×8 정점 블록, 블록별 CSR 제약 표, 깨어 있는 블록 + 8-이웃만 보정, 잠든 블록 경계는 고정점으로 처리.
 - **잠드는 규칙:** 속도와 제약 오차가 30프레임 연속으로 안정된 블록만 잠듭니다. 속도만 보고 재웠을 때 21 mm 가까이 나던 전체 보정과의 차이가 2.1 mm로 줄었습니다.
 - **전환 기준:** 활성 비율이 70%를 넘으면 전체 보정 경로로 계산합니다. 위 Large 조건처럼 변형이 넓을 때 이득이 줄어드는 문제를, 손해를 보지 않는 방향으로 다룹니다.
+- **결과:** RTX 3090, 96×96 천을 반복해서 누르는 장면에서 step 1.223 → 0.565 ms로 **2.16배** 빨랐습니다 (평균 활성 블록 28.7%).
 - **실시간 뷰어:** Win32 + OpenGL 3.3, 외부 라이브러리 없음. `C` 키로 두 솔버를 나란히 비교합니다.
 
 👉 **[soz1p/CUDA-PBD-Sandbox](https://github.com/soz1p/CUDA-PBD-Sandbox)** — 빌드 방법, 벤치마크, 옵션은 데모 저장소의 README에 있습니다.
