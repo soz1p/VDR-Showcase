@@ -1,72 +1,139 @@
-<!-- portfolio-cover-v1 -->
-# VDR — Volume Deformation & Rendering
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/header-dark.svg">
+  <img src="images/header-light.svg" alt="VDR: Volume Deformation and Rendering" width="100%">
+</picture>
 
-**HP-ChainMail · Active-block PBD | Hybrid deformation framework**
+<p align="center">
+  <a href="https://soz1p.github.io/jeon-sojin-portfolio/#p-vdr"><b>Portfolio (KO)</b></a> &nbsp;·&nbsp; <a href="https://soz1p.github.io/jeon-sojin-portfolio/?lang=en#p-vdr"><b>Portfolio (EN)</b></a> &nbsp;·&nbsp; <a href="papers/jeon-sojin-masters-thesis-2026.pdf"><b>Thesis PDF</b></a> &nbsp;·&nbsp; <a href="https://dspace.hansung.ac.kr/handle/2024.oak/10820"><b>HSU Repository</b></a>
+</p>
 
-![C++17](https://img.shields.io/badge/C%2B%2B17-25292e?style=flat-square) ![CUDA](https://img.shields.io/badge/CUDA-25292e?style=flat-square) ![Qt 6](https://img.shields.io/badge/Qt%206-25292e?style=flat-square) ![PBD](https://img.shields.io/badge/PBD-25292e?style=flat-square) ![ChainMail](https://img.shields.io/badge/ChainMail-25292e?style=flat-square)
+<p align="center">
+  <img src="https://img.shields.io/badge/C%2B%2B-6d62b8?style=flat-square" alt="C++"> <img src="https://img.shields.io/badge/CUDA%2012.6-6d62b8?style=flat-square" alt="CUDA 12.6"> <img src="https://img.shields.io/badge/HP--ChainMail-6d62b8?style=flat-square" alt="HP-ChainMail"> <img src="https://img.shields.io/badge/PBD-6d62b8?style=flat-square" alt="PBD"> <img src="https://img.shields.io/badge/Qt%206-6d62b8?style=flat-square" alt="Qt 6"> <img src="https://img.shields.io/badge/Volume%20rendering-6d62b8?style=flat-square" alt="Volume rendering">
+</p>
 
-2026 · 석사 학위논문 · 연구실 코드 기반
+> **핵심 기여** &nbsp; HP-ChainMail과 PBD를 결합한 하이브리드 솔버를 설계하고, 활성 블록만 보정해 PBD 보정 반복 속도를 최대 10.77배 높였습니다.
 
-[**Portfolio ↗**](https://soz1p.github.io/jeon-sojin-portfolio/#projects)
+<p align="center"><img src="images/vdr-demo.gif" alt="VDR Qt 실험 도구 실행 화면" width="760"></p>
+<p align="center"><sub>실행 화면 · 직접 모듈화한 Qt 실험 도구에서 조직 밀도, 변형 입력, 절개 범위, 카메라 시점을 조절하며 변형 결과를 인터랙티브하게 확인 · 전체 영상은 <a href="https://soz1p.github.io/jeon-sojin-portfolio/#p-vdr">포트폴리오</a></sub></p>
 
-HP-ChainMail의 빠른 변형 전파와 PBD 제약 보정을 결합하여 CT 볼륨의 변형을 예측하고 활성 블록에 연결된 제약만 평가합니다.
-
-<p align="center"><img src="images/vdr-pipeline.png" alt="VDR — Volume Deformation & Rendering — project preview" width="740"></p>
-<p align="center"><sub>학위논문 그림 3-1 · 하이브리드 프레임워크</sub></p>
-
-## Highlights
+## At a glance
 
 | Small | Medium | Large |
 | :---: | :---: | :---: |
-| 10.77× | 7.96× | 2.54× |
+| **10.77×** | **7.96×** | **2.54×** |
+| 활성 블록 0.59% | 활성 블록 3.36% | 활성 블록 18.59% |
 
-동일 warm-start 조건에서 Global PBD 대비 Active PBD 보정 단계 속도 향상 (학위논문 표 7-5). 전체 프레임 성능이 아니라 PBD 보정 반복 1회의 평균 시간 비교입니다.
+<sub>동일 warm-start 조건에서 전체 도메인 보정(M4) 대비 활성 블록 보정(M3)의 PBD 보정 반복 1회 가속비 · 학위논문 표 7-5. 전체 프레임 속도가 아닙니다.</sub>
 
-**Pipeline:** User input → HP-ChainMail → Active PBD → CUDA volume rendering
+**Pipeline** &nbsp; User input → HP-ChainMail propagation → Active-block PBD correction → CUDA volume rendering
 
-## My Contributions
+## STAR
 
-하이브리드 솔버 설계, 활성 블록 기반 제약 평가와 GPU 자료구조 구현, Qt 실험 환경 모듈화.
+| | |
+| :-- | :-- |
+| **S** · 상황 | 고해상도 CT 변형에서 PBD는 국소적인 변형에도 전체 영역을 반복 계산했고, ChainMail은 빠르지만 조직의 구조적 안정성을 보장하기 어려웠습니다. |
+| **T** · 과제 | 두 방식의 장점을 결합하고, 변형되지 않은 영역의 불필요한 GPU 연산을 줄이는 것이 목표였습니다. |
+| **A** · 내가 한 일 | • HP-ChainMail 결과를 PBD 초기 상태로 쓰는 warm-start 구조를 설계했습니다.<br>• 변형된 블록만 추적해 관련 제약만 푸는 Active Block Restricted Solve를 구현했습니다.<br>• 블록별 제약 참조 테이블과 CUDA 중복 투영 방지 로직을 구현했습니다.<br>• 위치 변화량과 부피 개선율로 반복 종료 조건을 설계했습니다.<br>• 볼륨·변형·렌더러를 모듈로 분리해 Qt 실험 도구로 구성했습니다. |
+| **R** · 결과 | 보정 반복 속도가 Small 10.77배, Medium 7.96배, Large 2.54배 빨라졌습니다. 알고리즘 분석부터 GPU 자료구조 설계, 구현, 실험 도구, 성능 검증까지 연구개발 전 과정을 경험했습니다. |
 
-## Master's Thesis
+## How it works
 
-**CT 영상 기반 변형 시뮬레이션을 위한 혼합형 프레임워크**  
-HP-ChainMail·PBD를 이용한 활성 블록 기반 제한 보정 및 STC 기반 절개 표현  
+<p align="center"><img src="images/vdr-pipeline.png" alt="하이브리드 변형 프레임워크" width="760"></p>
+<p align="center"><sub>학위논문 그림 3-1 · 기존 솔버의 한계를 분석해 설계한 GPU 기반 선택적 제약 보정 구조</sub></p>
+
+기여는 HP-ChainMail이나 PBD를 새로 정의한 데 있지 않습니다. HP-ChainMail을 PBD 앞의 **구조 예측 단계**로 두고, 그 결과인 `x_prop`과 `B_active`를 PBD의 초기 상태와 제약 평가 범위로 다시 쓰는 구조입니다.
+
+| 식 | 의미 |
+| --- | --- |
+| `x_prop = P(x₀, u)` | HP-ChainMail 구조 예측 |
+| `x_final = S(x_prop)` | PBD 제약 보정 |
+| `d_min ≤ x_j − x_i ≤ d_max` | 이웃 요소의 상대 변위 허용 범위 |
+| `C = C_d ∪ C_v ∪ C_θ` | 거리 · 부피 · 이면각 제약 |
+
+### 1 · HP-ChainMail 전파와 PBD warm-start
+이웃 요소의 상대 변위가 물성별 허용 범위를 벗어나면 그 범위 안으로 끌어오면서 변형을 퍼뜨립니다. 이렇게 만든 `x_prop`에서 PBD를 시작하는 것을 **warm-start**, 변형 전 상태에서 시작하는 기존 방식을 **cold-start**로 구분했습니다. ChainMail이 edge 구조는 먼저 잡아주지만 사면체 부피는 보장하지 않으므로, 반복 종료에는 정점 위치 변화량의 최댓값과 **부피 제약 위반량의 개선율**을 씁니다.
+
+### 2 · Active Block Restricted Solve
+<p align="center"><img src="images/vdr-active.png" alt="활성 블록 집합" width="680"></p>
+
+볼륨을 8³ 블록으로 나누고, ChainMail 전파가 실제로 지나간 블록을 `B_active`로 기록합니다. 원래 전파 관리용이던 이 정보를 PBD가 **어디를 보정할지 정하는 범위**로 재사용했습니다. 전파가 끝나면 `B_active`는 고정되고, PBD는 전체 도메인 대신 이 블록에 연결된 제약만 평가합니다.
+
+### 3 · BlockConstraintTable
+<p align="center"><img src="images/vdr-bct.png" alt="BlockConstraintTable" width="680"></p>
+
+- **모든 관련 블록에 등록** · 거리 제약은 edge의 두 정점, 부피 제약은 사면체의 네 정점이 속한 블록 모두에 등록해 경계에 걸친 제약이 빠지지 않게 했습니다.
+- **평탄화 배열과 구간 인덱스** · 초기화 때 CPU에서 한 번 만들어 제약 유형별 연속 배열과 블록별 시작 위치·개수로 GPU에 올리고, 반복 중에는 활성 블록의 구간만 순회합니다.
+- **중복 투영 방지** · 제약별 정수 플래그를 매 반복 0으로 초기화하고, `atomicCAS`로 0을 1로 처음 바꾼 스레드만 투영합니다.
+
+## Qt experiment tool
+
+연구 알고리즘을 동일한 CT 볼륨과 입력에서 여러 솔버로 비교할 수 있는 실험 소프트웨어로 모듈화했습니다.
+
+```
+QMainWindow · Volume Deformation Research
+├── GLWidget : QOpenGLWidget      CUDA 렌더 프레임 · 표면 선택 · 드래그 입력
+├── InfoPanel                     프레임 시간 · FPS
+└── QScrollArea › ControlPanel    밀도 구간 · 데이터셋 · 고정 입력 · 입력 방향 g · epiCenter
+                                  절단 범위 · 카메라 · ChainMail 실험 프리셋 · 기준 벤치마크
+```
+
+- **인터페이스와 팩토리** · `Volume`, `Deformer`, `Renderer` 인터페이스와 각 Factory가 CTVolume, ChainMail·PBD, CUDA VolumeRenderer를 만들어, 변형기나 렌더러를 바꿔도 화면 코드는 그대로입니다.
+- **명확한 소유권** · 모듈을 `std::unique_ptr`로 만들어 VDR → MainWindow → GLWidget으로 이동시켜 GPU 자원의 수명을 한곳에서 관리합니다.
+- **시그널과 슬롯** · ControlPanel의 시그널 12개를 GLWidget 슬롯에 연결하고, GLWidget은 프레임 시간을 InfoPanel로, 볼륨 크기를 ControlPanel 슬라이더 범위로 돌려보냅니다. 패널끼리는 서로를 모릅니다.
+- **비교 프리셋** · Prop Only, Restricted Active, Global Solve, Pure ChainMail, Pure PBD, Cold Restricted로 논문의 비교 방법(M1~M4)을 같은 입력에서 바로 실행합니다.
+- **입력 재현과 자동 캡처** · 고정 입력 모드로 같은 변형을 반복하고, `QTimer`로 프리셋을 차례로 실행해 같은 카메라로 화면을 저장합니다.
+- **빌드와 점검** · CMake에서 vdr 정적 라이브러리와 실행 파일을 분리하고, `--display-self-test`로 CUDA 없이 화면 표시만 검사합니다.
+
+```cpp
+connect(_controlPanel, &ControlPanel::runChainmailExperiment,
+        _glWidget,     &GLWidget::runChainmailExperiment);
+connect(_glWidget,     &GLWidget::updateFrameTime,
+        _infoPanel,    &InfoPanel::showFrameTime);
+connect(_glWidget,     &GLWidget::volumeBoundsChanged,
+        _controlPanel, &ControlPanel::setVolumeBounds);
+```
+
+## Results
+
+| 변형 규모 | 활성 블록 | M4 Global (ms) | M3 Active (ms) | 속도 향상 |
+| --- | ---: | ---: | ---: | ---: |
+| Small | 15 / 2,560 | 8.46 | 0.79 | **10.77×** |
+| Medium | 86 / 2,560 | 8.53 | 1.07 | **7.96×** |
+| Large | 476 / 2,560 | 10.04 | 3.96 | **2.54×** |
+
+<sub>학위논문 표 7-5 · Abdomen · 보정 반복 1회 평균 · 가속비는 논문의 반올림 전 측정값 기반 보고값입니다.</sub>
+
+| 규모 | M1 ChainMail only | M2 PBD cold-start | M3 Hybrid (제안) |
+| --- | --- | --- | --- |
+| Small | 0.98 ms | 8.11 ms · 300회 ✗ | **0.79 ms · 59회 ✓** |
+| Medium | 0.92 ms | 8.17 ms · 300회 ✗ | **1.07 ms · 68회 ✓** |
+| Large | 0.92 ms | 8.25 ms · 300회 ✗ | 3.96 ms · 300회 ✗ |
+
+<sub>학위논문 표 7-4 · relaxMs와 반복 횟수, 반복 상한 300회 내 종료 여부</sub>
+
+<p align="center"><img src="images/vdr-twist-m1.jpg" alt="M1" width="240"> <img src="images/vdr-twist-m2.jpg" alt="M2" width="240"> <img src="images/vdr-twist-m3.jpg" alt="M3" width="240"></p>
+<p align="center"><sub>학위논문 그림 7-1 중 Lower Body / Twist · M1 / M2 / M3. M1은 비틀림이 몰린 부위가 가늘어지고, M3는 PBD 보정으로 M2와 비슷한 구조적 변형을 보입니다.</sub></p>
+
+<sub>실험 환경 · NVIDIA GeForce RTX 3090, AMD Ryzen 9 3900X, Windows 10, C++ / CUDA 12.6 · Abdomen 512×512×300, Head 512×512×544, Lower body 512×512×1152 CT를 4배 다운샘플링 · 블록 크기 8³</sub>
+
+## Limitations & next steps
+
+- 변형이 넓게 퍼지면 활성 블록이 늘어 전체 보정에 가까운 비용이 듭니다. Large 조건에서는 2.54배로 줄고 반복 상한 안에 종료하지 못했습니다.
+- 측정 시간은 방법 간 비교를 위한 보수적인 종료 조건의 결과입니다. 고정된 소수 반복으로 운용하는 조건은 따로 재야 합니다.
+- 변형 결과 평가가 정성 비교 중심이라, 형상 오차 같은 정량 지표가 필요합니다.
+
+## Master's thesis
+
+**CT 영상 기반 변형 시뮬레이션을 위한 혼합형 프레임워크**
+HP-ChainMail·PBD를 이용한 활성 블록 기반 제한 보정 및 STC 기반 절개 표현
 전소진 · 한성대학교 대학원 컴퓨터공학과 · 2026 · 지도교수 계희원
 
 [Thesis PDF](papers/jeon-sojin-masters-thesis-2026.pdf) · [Official HSU Repository](https://dspace.hansung.ac.kr/handle/2024.oak/10820)
 
-## Approach
+## Source availability & license
 
-1. HP-ChainMail로 사용자 입력에 따른 변형을 전파합니다.
-2. 예측 변형 상태를 PBD의 초기 상태(warm-start)로 활용합니다.
-3. 활성 블록과 연결된 제약만 선택해 보정합니다.
-4. 변형된 볼륨을 GPU 렌더링으로 시각화합니다.
+연구실 코드, 후속 연구 코드, 원본 CT 데이터는 공개하지 않습니다. 학위논문은 공식 원문에 명시된 [CC BY-NC-ND 2.0 KR](https://creativecommons.org/licenses/by-nc-nd/2.0/kr/)에 따라 변경 없이 제공하며, 그림의 출처는 학위논문입니다.
 
-<p align="center"><img src="images/vdr-active.png" alt="Active block restricted solve" width="740"></p>
-<p align="center"><sub>학위논문 그림 4-1 · 활성 블록 집합과 제한 보정 영역</sub></p>
+---
 
-## Results
-
-| Deformation | Global PBD avg. iteration (ms) | Active PBD avg. iteration (ms) | Speedup |
-| --- | ---: | ---: | ---: |
-| Small | 8.46 | 0.79 | 10.77× |
-| Medium | 8.53 | 1.07 | 7.96× |
-| Large | 10.04 | 3.96 | 2.54× |
-
-학위논문 표 7-5 · 동일 warm-start 조건의 PBD 보정 단계 비교. Large 조건에서는 300회 반복 상한 내 종료 조건을 만족하지 못했습니다. 속도 향상은 논문의 반올림 전 측정값에 기반한 보고 수치이며, 표의 소수 둘째 자리 시간값으로 재계산하면 차이가 날 수 있습니다.
-
-## Source Availability
-
-연구실 코드 및 후속 연구의 소스코드는 공개하지 않습니다. 이 페이지는 석사 연구의 개요와 연구 성과를 소개합니다.
-
-## Performance Analysis
-
-전체 2,560개 블록 중 활성 블록은 Small 15개(0.59%), Medium 86개(3.36%), Large 476개(18.59%)입니다. 변형이 확산될수록 평가 범위가 커지고 이득이 줄어듭니다. 제한 보정이 전역 보정과 동일한 수렴을 보장하지는 않습니다.
-
-<p align="center"><img src="images/vdr-twist-m1.jpg" alt="ChainMail-only twist" width="230"> <img src="images/vdr-twist-m2.jpg" alt="PBD cold-start twist" width="230"> <img src="images/vdr-twist-m3.jpg" alt="Hybrid twist" width="230"></p>
-<p align="center"><sub>학위논문 그림 7-1 중 Lower Body / Twist · M1 / M2 / M3</sub></p>
-
-## Thesis License
-
-전소진 (2026). 공식 원문에 명시된 [CC BY-NC-ND 2.0 KR](https://creativecommons.org/licenses/by-nc-nd/2.0/kr/)에 따라 전체 PDF를 변경 없이 제공합니다. 그림의 출처는 학위논문이며 연구실 코드와 원본 CT 데이터는 포함하지 않습니다.
+<sub>전소진 · Jeon Sojin · Graphics Engineer &nbsp;|&nbsp; <a href="https://soz1p.github.io/jeon-sojin-portfolio/">Portfolio</a> · <a href="https://github.com/soz1p">GitHub</a> · <a href="https://www.linkedin.com/in/soz1p">LinkedIn</a> · jeonsoz1p@gmail.com</sub>
