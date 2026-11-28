@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/C%2B%2B-6d62b8?style=flat-square" alt="C++"> <img src="https://img.shields.io/badge/CUDA%2012.6-6d62b8?style=flat-square" alt="CUDA 12.6"> <img src="https://img.shields.io/badge/HP--ChainMail-6d62b8?style=flat-square" alt="HP-ChainMail"> <img src="https://img.shields.io/badge/PBD-6d62b8?style=flat-square" alt="PBD"> <img src="https://img.shields.io/badge/Qt%206-6d62b8?style=flat-square" alt="Qt 6"> <img src="https://img.shields.io/badge/Volume%20rendering-6d62b8?style=flat-square" alt="Volume rendering">
+  <img src="https://img.shields.io/badge/C%2FC%2B%2B-6d62b8?style=flat-square" alt="C/C++"> <img src="https://img.shields.io/badge/CUDA%2012.6-6d62b8?style=flat-square" alt="CUDA 12.6"> <img src="https://img.shields.io/badge/HP--ChainMail-6d62b8?style=flat-square" alt="HP-ChainMail"> <img src="https://img.shields.io/badge/PBD-6d62b8?style=flat-square" alt="PBD"> <img src="https://img.shields.io/badge/Qt%206-6d62b8?style=flat-square" alt="Qt 6"> <img src="https://img.shields.io/badge/Volume%20rendering-6d62b8?style=flat-square" alt="Volume rendering">
 </p>
 
 > **핵심 기여** &nbsp; HP-ChainMail과 PBD를 결합한 하이브리드 솔버를 설계하고, 활성 블록만 보정해 PBD 보정 반복 속도를 최대 10.77배 높였습니다.
